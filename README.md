@@ -97,7 +97,10 @@ https://raw.githubusercontent.com/<账号>/<仓库>/main/apple-intel.conf
 上游 `lazy_group.conf` 更新后，仓库会自动同步：
 
 - **GitHub Actions** — `.github/workflows/update.yml` 每天跑一次，
-  拉上游 → 重新合并 → 有变化就自动提交。也可以在 Actions 页面手动点一下触发。
+  拉上游 → 重新合并 → 有变化就自动提交。三种触发方式：
+  - `schedule`：每天 12:17 (UTC+8) 自动跑
+  - `push`：你改了 `scripts/` 或工作流本身时自动重跑
+  - `workflow_dispatch`：在 Actions 页面手动点一下
 - **本地手动跑**（改过脚本或想立刻生效）：
 
 ```bash
