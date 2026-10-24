@@ -1,0 +1,42 @@
+name: 同步上游 lazy_group.conf
+
+on:
+  schedule:
+    # 每天 12:17 (UTC+8) 拉一次上游
+    - cron: '17 4 * * *'
+  workflow_dispatch:      # 也可以在网页上手动点一下触发
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-upstream
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 拉取上游 lazy_group.conf
+        run: python3 scripts/fetch_upstream.py
+
+      - name: 合并生成配置
+        run: python3 scripts/merge_lazy_ai.py
+
+      - name: 有变化才提交
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "上游无变化, 不提交"
+          else
+            git commit -m "chore: 同步上游 lazy_group.conf"
+            git push
+          fi
