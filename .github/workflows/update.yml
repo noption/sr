@@ -1,6 +1,11 @@
 name: 同步上游 lazy_group.conf
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update.yml'
+      - 'scripts/**'
   schedule:
     # 每天 12:17 (UTC+8) 拉一次上游
     - cron: '17 4 * * *'
